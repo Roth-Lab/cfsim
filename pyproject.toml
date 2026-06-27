@@ -1,0 +1,23 @@
+[project]
+name = "cfsim"
+requires-python = ">=3.12"
+version = "0.1.0"
+readme = "README.md"
+dependencies = [
+    "click>=8.0",
+    "h5py",
+    "pandas",
+    "pysam",
+    "scipy",
+    "statsmodels"
+]
+scripts = { cfsim = "cfsim.cli:main"}
+
+[build-system]
+requires = ["uv_build"]
+build-backend = "uv_build"
+
+[tool.uv]
+package = truea
+
+
