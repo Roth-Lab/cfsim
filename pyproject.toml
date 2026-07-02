@@ -9,7 +9,9 @@ dependencies = [
     "pandas",
     "pysam",
     "scipy",
-    "statsmodels"
+    "statsmodels",
+    "matplotlib",
+    "seaborn"
 ]
 scripts = { cfsim = "cfsim.cli:main"}
 
@@ -18,6 +20,6 @@ requires = ["uv_build"]
 build-backend = "uv_build"
 
 [tool.uv]
-package = truea
+package = true
 
 
