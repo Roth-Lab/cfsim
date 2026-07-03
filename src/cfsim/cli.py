@@ -1,6 +1,6 @@
 import click
 
-import cfsim.run
+import cfsim.simulate
 
 @click.command(name="simulate")
 @click.option(
@@ -64,7 +64,7 @@ import cfsim.run
     help="",
 )
 def simulate(**kwargs):
-    cfsim.run.simulate(**kwargs)
+    cfsim.simulate.simulate(**kwargs)
 
 @click.group(name="cfsim")
 @click.version_option()

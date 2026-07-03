@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt 
 import seaborn as sb
 from dataclasses import dataclass
-from cfcore.colours import colours
+from cfsim.colours import colours
 
 
 @dataclass
