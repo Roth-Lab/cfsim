@@ -1,6 +1,6 @@
 import click
 
-import cfsim.simulate
+from cfsim.simulate import run_simulate
 
 @click.command(name="simulate")
 @click.option(
@@ -25,10 +25,9 @@ import cfsim.simulate
     "-o",
     "--out-file",
     required=True,
-    type=click.Path(exists=True, resolve_path=True),
+    type=click.Path(exists=False, resolve_path=True),
 )
 @click.option(
-    "-o",
     "--clone-prevalence-file",
     required=True,
     type=click.Path(exists=True, resolve_path=True),
@@ -64,7 +63,7 @@ import cfsim.simulate
     help="",
 )
 def simulate(**kwargs):
-    cfsim.simulate.simulate(**kwargs)
+    run_simulate(**kwargs)
 
 @click.group(name="cfsim")
 @click.version_option()

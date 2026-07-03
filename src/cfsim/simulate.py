@@ -8,7 +8,7 @@ from cfsim.dataset import DataSet
 from cfsim.normalize import gc_correction
 
 
-def simulate(
+def run_simulate(
         hapclone_data_file: Path,
         hapclone_results_file: Path,
         snp_file: Path,
