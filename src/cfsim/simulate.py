@@ -188,7 +188,28 @@ def generate_tumour_baf(cell_profiles, cell_reads, data, read_length, snp_densit
 
 
 
-def compute_target_reads(coverage, data, clone_ploidy, clone_prevalence, read_length, tumour_content):
+def compute_target_reads(
+        coverage: float,
+        data: DataSet,
+        clone_ploidy: dict[str, float],
+        clone_prevalence: dict[str, float],
+        read_length: int,
+        tumour_content: float
+    ) -> tuple[dict[str, float], float]:
+    """
+
+    Args:
+        coverage (float): coverage of sample
+        data (DataSet): scWGS dataset 
+        clone_ploidy (dict[int, float]): dictionary of clone labels to clone ploidy
+        clone_prevalence (dict[int, float]): dictionary of clone labels to clone prevalences s.t sum(clone_prevalence.values()) = 1.
+        read_length (int): read length of sequencer
+        tumour_content (float): float between in [0, 1]
+
+    Returns
+        target_clone_reads (dict): mapping from clone label to clone number of reads
+        target_normal_reads: number of normal reads
+    """
     target_reads = (coverage * data.genome_size) / read_length
 
     m = 0
@@ -196,14 +217,20 @@ def compute_target_reads(coverage, data, clone_ploidy, clone_prevalence, read_le
     for c in clone_ploidy:
         m += clone_prevalence[c] * clone_ploidy[c]
 
+    m *= tumour_content
+
+    m += (1-tumour_content) * 2
+
     target_clone_reads = {}
 
     for c in clone_ploidy:
         target_clone_reads[c] = math.ceil(
-            ((clone_ploidy[c] * clone_prevalence[c]) / (2 + m)) * tumour_content * target_reads
+            # ((clone_ploidy[c] * clone_prevalence[c]) / (2 + m)) * tumour_content * target_reads
+            ((clone_ploidy[c] * clone_prevalence[c]) / m) * tumour_content * target_reads
         )
 
-    target_normal_reads = math.ceil((2 / (2 + m)) * (1 - tumour_content) * target_reads)
+    # target_normal_reads = math.ceil((2 / (2 + m)) * (1 - tumour_content) * target_reads)
+    target_normal_reads = math.ceil((2 / m) * (1 - tumour_content) * target_reads)
 
     return target_clone_reads, target_normal_reads
 
