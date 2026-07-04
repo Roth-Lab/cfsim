@@ -1,6 +1,7 @@
 import click
 
 from cfsim.simulate import run_simulate
+from cfsim.plot import plot_cfdna
 
 @click.command(name="simulate")
 @click.option(
@@ -65,6 +66,23 @@ from cfsim.simulate import run_simulate
 def simulate(**kwargs):
     run_simulate(**kwargs)
 
+@click.command(name="plot-cfdna")
+@click.option(
+    "-i",
+    "--in-file",
+    required=True,
+    type=click.Path(exists=True, resolve_path=True),
+)
+@click.option(
+    "-o",
+    "--out-file",
+    required=True,
+    type=click.Path(exists=False, resolve_path=True),
+)
+def plot(**kwargs):
+    plot_cfdna(**kwargs)
+
+
 @click.group(name="cfsim")
 @click.version_option()
 def main():
@@ -72,3 +90,4 @@ def main():
 
 
 main.add_command(simulate)
+main.add_command(plot)

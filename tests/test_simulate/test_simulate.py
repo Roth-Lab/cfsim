@@ -4,7 +4,7 @@ import pandas as pd
 
 import argparse
 
-from cfsim.simulate import simulate
+from cfsim.simulate import run_simulate
 
 from cfsim.tests.build_data import main
 
@@ -42,7 +42,7 @@ def test_implementation():
         seed=0
     )
 
-    cfdna = simulate(**asdict(args))
+    cfdna = run_simulate(**asdict(args))
 
     # RUN WITH OLD CODE 
 

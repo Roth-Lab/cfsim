@@ -20,10 +20,12 @@ class AxesSettings:
 
 
 def plot_cfdna(
-    cfdna: pd.DataFrame,
+    in_file: str,
     out_file: str | None = None,
     show: bool = False
 ) -> None:
+    
+    cfdna = pd.read_csv(in_file, sep='\t')
     
     axes = [
         AxesSettings(cfdna, yvar='reads'),
