@@ -9,22 +9,17 @@ A python package that simulates cfDNA data by mixing scWGS data.
    cd path/to/project
    ```
 2. Clone the repository through git:
-      ```
-      git clone --depth 1 https://github.com/matteolepur/cfsim.git
-      ```
- 
-3. Download [pixi](https://pixi.prefix.dev/latest/), version >0.72.0:
     ```
-    pixi init
+    git clone --depth 1 https://github.com/matteolepur/cfsim.git
     ```
-4. You will be prompted to extended the existing `pyproject.toml` click yes:
-   ```
-   A 'pyproject.toml' file already exists. Do you want to extend it with the '[tool.pixi]' configuration? [y/N]
-   y
-   ```
+3. Install
+    ```
+    cd cfsim 
+    pip install .
+    ```
 4. Verify the installation worked:
     ```
-    pixi run cfsim
+    cfsim
     ```
 --------
 ### Commands
@@ -36,3 +31,15 @@ A python package that simulates cfDNA data by mixing scWGS data.
 
 #### Last time
 - implement plotting code
+
+
+#### Helpful commands
+Add packages to default or dev environment:
+```
+uv add package
+uv add --dev package
+```
+Run tests from dev environment:
+```
+uv run --dev pytest path/to/test.py
+```
