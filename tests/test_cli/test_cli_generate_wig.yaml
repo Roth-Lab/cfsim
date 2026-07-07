@@ -1,0 +1,2 @@
+in-file: /home/matteo/projects/lrn/tutorials/pixi-play-ground/cfmonorepo/packages/cfsim/tests/test_wig/data/test.tsv.gz
+out-file: /home/matteo/projects/lrn/tutorials/pixi-play-ground/cfmonorepo/packages/cfsim/tests/test_cli/results/test_cli_generate_wig/test.wig
