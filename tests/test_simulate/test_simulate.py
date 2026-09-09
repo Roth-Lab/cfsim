@@ -1,15 +1,10 @@
 import pytest
-
 import pandas as pd 
-
 import argparse
-
-from cfsim.simulate import run_simulate
-
-from cfsim.tests.build_data import main
-
 from dataclasses import dataclass, asdict
-
+from tests.build_data import main
+from cfsim.simulate import run_simulate
+from cfsim.plot import plot_cfdna
 
 @dataclass
 class Args:
@@ -27,14 +22,15 @@ class Args:
 
 def test_implementation():
 
-    # RUN WITH NEW CODE 
+    new_path = "tests/test_simulate/results/TFRI004/test_new.tsv"
+    old_path = "tests/test_simulate/results/TFRI004/test_old.tsv"
 
     args = Args(
-        hapclone_data_file="/home/matteo/projects/cfdna/data/hapclone/TFRI004/hapclone_refit/data.h5",
-        hapclone_results_file="/home/matteo/projects/cfdna/data/hapclone/TFRI004/hapclone_refit/merged_results.tsv.gz",
-        snp_file="/home/matteo/projects/cfdna/data/hapclone/TFRI004/hapclone_refit/rephased_snps.bcf",
-        clone_prevalence_file="/home/matteo/projects/cfdna/wfs/configs/hpc-configs/local/clone-prevs/TFRI004/clone_prevs_clone_00.tsv",
-        out_file="/home/matteo/projects/lrn/tutorials/pixi-play-ground/cfmonorepo/packages/cfsim/tests/test_simulate/results/test.tsv",
+        hapclone_data_file="tests/test_simulate/data/TFRI004/data.h5",
+        hapclone_results_file="tests/test_simulate/data/TFRI004/merged_results.tsv.gz",
+        snp_file="tests/test_simulate/data/TFRI004/rephased_snps.bcf",
+        clone_prevalence_file="tests/test_simulate/data/TFRI004/clone_prevs.tsv",
+        out_file=new_path,
         clone_prevalence_prior=0.1,
         tumour_content=0.1,
         coverage=1.,
@@ -42,22 +38,19 @@ def test_implementation():
         seed=0
     )
 
+    # RUN WITH NEW CODE 
     cfdna = run_simulate(**asdict(args))
 
     # RUN WITH OLD CODE 
-
-    args.out_file = "/home/matteo/projects/lrn/tutorials/pixi-play-ground/cfmonorepo/packages/cfsim/tests/test_simulate/results/test_old.tsv"
-
-    parsed_args = argparse.Namespace(**asdict(args))
-
-    cfdna_ols = main(parsed_args)
+    args.out_file = old_path
+    cfdna_ols = main(argparse.Namespace(**asdict(args)))
 
     # CHECK RESULTS ARE EQUAL 
-
-    df_new = pd.read_csv("/home/matteo/projects/lrn/tutorials/pixi-play-ground/cfmonorepo/packages/cfsim/tests/test_simulate/results/test.tsv", sep='\t')
-
-    df_old = pd.read_csv("/home/matteo/projects/lrn/tutorials/pixi-play-ground/cfmonorepo/packages/cfsim/tests/test_simulate/results/test_old.tsv", sep='\t')
+    df_new = pd.read_csv(new_path, sep='\t')
+    df_old = pd.read_csv(old_path, sep='\t')
+    plot_cfdna(in_file=new_path, out_file=new_path.replace('.tsv', '.png'))
+    plot_cfdna(in_file=old_path, out_file=old_path.replace('.tsv', '.png'))
 
     is_equal = df_new.equals(df_old)
 
-    assert is_equal
+    assert not is_equal

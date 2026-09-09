@@ -1,8 +1,8 @@
-hapclone-data-file: "/home/matteo/projects/cfdna/data/hapclone/TFRI004/hapclone_refit/data.h5"
-hapclone-results-file: "/home/matteo/projects/cfdna/data/hapclone/TFRI004/hapclone_refit/merged_results.tsv.gz"
-snp-file: "/home/matteo/projects/cfdna/data/hapclone/TFRI004/hapclone_refit/rephased_snps.bcf"
-clone-prevalence-file: "/home/matteo/projects/cfdna/wfs/configs/hpc-configs/local/clone-prevs/TFRI004/clone_prevs_clone_00.tsv"
-out-file: "/home/matteo/projects/lrn/tutorials/pixi-play-ground/cfmonorepo/packages/cfsim/tests/test_cli/results/test_cli_simulate/test.tsv"
+hapclone-data-file: "tests/test_simulate/data/CID0006606/data.h5"
+hapclone-results-file: "tests/test_simulate/data/CID0006606/merged_results.tsv.gz"
+snp-file: "tests/test_simulate/data/CID0006606/rephased_snps.bcf"
+clone-prevalence-file: "tests/test_simulate/data/CID0006606/clone_prevs.tsv"
+out-file: "tests/test_cli/results/test_cli_simulate/test.tsv"
 clone-prevalence-prior: 0.1
 tumour-content: 0.1
 coverage: 1.
