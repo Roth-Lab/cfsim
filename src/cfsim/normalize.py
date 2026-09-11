@@ -62,9 +62,13 @@ def modal_quantile_regression(df_regression, lowess_frac=0.2, degree=2, knots=(0
         data=df_regression,
     )
 
-    poly_quantile_fit = [poly_quantile_model.fit(q=q, max_iter=10000) for q in quantiles]
+    poly_quantile_fit = [
+        poly_quantile_model.fit(q=q, max_iter=10000) for q in quantiles
+    ]
 
-    poly_quantile_predict = [poly_quantile_fit[i].predict(df_regression) for i in range(len(quantiles))]
+    poly_quantile_predict = [
+        poly_quantile_fit[i].predict(df_regression) for i in range(len(quantiles))
+    ]
 
     poly_quantile_params = pd.DataFrame()
 
@@ -121,4 +125,3 @@ def modal_quantile_regression(df_regression, lowess_frac=0.2, degree=2, knots=(0
     df_regression["modal_curve"] = df_regression[modal_quantile]
 
     return df_regression
-

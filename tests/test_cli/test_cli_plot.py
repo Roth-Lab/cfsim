@@ -1,8 +1,5 @@
-import pytest
-
 from cfsim.cli import plot
-
-from tests.helpers import load_config, check_cli_from_config_dict
+from tests.helpers import check_cli_from_config_dict, load_config
 
 
 def test_cli_simulate():
@@ -12,4 +9,3 @@ def test_cli_simulate():
     config = load_config(config_file)
 
     check_cli_from_config_dict(command=plot, config_dict=config)
-

@@ -1,10 +1,12 @@
-import pytest
-import pandas as pd 
 import argparse
-from dataclasses import dataclass, asdict
-from tests.build_data import main
-from cfsim.simulate import run_simulate
+from dataclasses import asdict, dataclass
+
+import pandas as pd
+
 from cfsim.plot import plot_cfdna
+from cfsim.simulate import run_simulate
+from tests.build_data import main
+
 
 @dataclass
 class Args:
@@ -33,23 +35,23 @@ def test_implementation():
         out_file=new_path,
         clone_prevalence_prior=0.1,
         tumour_content=0.1,
-        coverage=1.,
+        coverage=1.0,
         read_length=150,
-        seed=0
+        seed=0,
     )
 
-    # RUN WITH NEW CODE 
+    # RUN WITH NEW CODE
     cfdna = run_simulate(**asdict(args))
 
-    # RUN WITH OLD CODE 
+    # RUN WITH OLD CODE
     args.out_file = old_path
     cfdna_ols = main(argparse.Namespace(**asdict(args)))
 
-    # CHECK RESULTS ARE EQUAL 
-    df_new = pd.read_csv(new_path, sep='\t')
-    df_old = pd.read_csv(old_path, sep='\t')
-    plot_cfdna(in_file=new_path, out_file=new_path.replace('.tsv', '.png'))
-    plot_cfdna(in_file=old_path, out_file=old_path.replace('.tsv', '.png'))
+    # CHECK RESULTS ARE EQUAL
+    df_new = pd.read_csv(new_path, sep="\t")
+    df_old = pd.read_csv(old_path, sep="\t")
+    plot_cfdna(in_file=new_path, out_file=new_path.replace(".tsv", ".png"))
+    plot_cfdna(in_file=old_path, out_file=old_path.replace(".tsv", ".png"))
 
     is_equal = df_new.equals(df_old)
 

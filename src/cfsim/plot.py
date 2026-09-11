@@ -1,8 +1,10 @@
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt 
-import seaborn as sb
 from dataclasses import dataclass
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import seaborn as sb
+
 from cfsim.colours import colours
 
 
@@ -15,25 +17,20 @@ class AxesSettings:
     legend: bool = False
 
     def __post_init__(self):
-        if self.yvar == 'baf':
-            self.df['baf'] = self.df['b'] / (self.df['b'] + self.df['a'])
+        if self.yvar == "baf":
+            self.df["baf"] = self.df["b"] / (self.df["b"] + self.df["a"])
 
 
-def plot_cfdna(
-    in_file: str,
-    out_file: str | None = None,
-    show: bool = False
-) -> None:
-    
-    cfdna = pd.read_csv(in_file, sep='\t')
-    
+def plot_cfdna(in_file: str, out_file: str | None = None, show: bool = False) -> None:
+
+    cfdna = pd.read_csv(in_file, sep="\t")
+
     axes = [
-        AxesSettings(cfdna, yvar='reads'),
-        AxesSettings(cfdna, yvar='rdr'),
-        AxesSettings(cfdna, yvar='baf'),
-
+        AxesSettings(cfdna, yvar="reads"),
+        AxesSettings(cfdna, yvar="rdr"),
+        AxesSettings(cfdna, yvar="baf"),
     ]
-    
+
     fig = plt.figure(figsize=(16, 2 * len(axes)))
 
     grid = fig.add_gridspec(len(axes), 1, hspace=0.1)
@@ -69,7 +66,6 @@ def plot_cfdna(
     fig.savefig(out_file, dpi=150, bbox_inches="tight")
 
     if show:
-
         plt.close()
 
     plt.close()
@@ -77,7 +73,7 @@ def plot_cfdna(
 
 def plot_data(
     df: pd.DataFrame,
-    yvar: str, 
+    yvar: str,
     chroms: list[str],
     fig: plt.Figure,
     grid: plt.GridSpec,
@@ -88,11 +84,10 @@ def plot_data(
     y_max = df[yvar].max()
 
     y_min = df[yvar].min()
-    
+
     grouped = df.groupby("chrom")
 
     for i, chrom in enumerate(chroms):
-
         chrom_df = grouped.get_group(chrom)
 
         chrom_df = chrom_df.sort_values(by=["start"])
@@ -102,7 +97,7 @@ def plot_data(
         chrom_df["idx"] = np.arange(num_bins)
 
         ax = fig.add_subplot(grid[0, i])
-        
+
         ax.scatter(
             chrom_df["idx"],
             chrom_df[yvar],
@@ -164,10 +159,8 @@ def plot_data(
         ax.set_title(title)
 
 
-
 def sort_chroms(chroms: list[str]) -> list[str]:
-    """sort_chroms adapted from: https://github.com/Roth-Lab/hapclone-smk/blob/main/scripts/plot_clone_pseudobulk.py
-    """
+    """sort_chroms adapted from: https://github.com/Roth-Lab/hapclone-smk/blob/main/scripts/plot_clone_pseudobulk.py"""
     numeric = []
     string = []
 
@@ -184,9 +177,9 @@ def sort_chroms(chroms: list[str]) -> list[str]:
         except ValueError:
             string.append(c)
 
-    chroms = [str(x) for x in sorted(numeric)] + list(sorted(string))
+    chroms = [str(x) for x in sorted(numeric)] + sorted(string)
 
     if chr_prefix:
-        chroms = ["chr{}".format(x) for x in chroms]
+        chroms = [f"chr{x}" for x in chroms]
 
     return chroms

@@ -1,29 +1,32 @@
 import math
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
 import pysam
 
-from pathlib import Path
 from cfsim.dataset import DataSet
 from cfsim.normalize import gc_correction
 
 
 def run_simulate(
-        hapclone_data_file: Path,
-        hapclone_results_file: Path,
-        snp_file: Path,
-        clone_prevalence_file: Path,
-        out_file: Path,
-        coverage: float,
-        clone_prevalence_prior: float,
-        tumour_content: float,
-        read_length: int,
-        seed: int,
+    hapclone_data_file: Path,
+    hapclone_results_file: Path,
+    snp_file: Path,
+    clone_prevalence_file: Path,
+    out_file: Path,
+    coverage: float,
+    clone_prevalence_prior: float,
+    tumour_content: float,
+    read_length: int,
+    seed: int,
 ) -> None:
 
     rng = np.random.RandomState(seed)
 
-    cell_profiles, cell_to_clone, clone_ploidy, data = load_data(hapclone_data_file, hapclone_results_file)
+    cell_profiles, cell_to_clone, clone_ploidy, data = load_data(
+        hapclone_data_file, hapclone_results_file
+    )
 
     clone_prevalence = generate_clone_prevalence(
         clone_ploidy,
@@ -56,9 +59,9 @@ def run_simulate(
     )
 
     df = data.bin_df
-    
+
     df["reads"] = normal_reads + cell_reads.sum(axis=0)
-    
+
     snp_density = compute_snp_density(data, snp_file)
 
     df["a"], df["b"] = generate_baf(
@@ -86,7 +89,7 @@ def run_simulate(
     df = df[df["valid"]]
 
     df.to_csv(out_file, index=False, sep="\t")
-    
+
 
 def compute_snp_density(data, snp_file):
     snp_reader = pysam.VariantFile(snp_file, "r")
@@ -187,20 +190,19 @@ def generate_tumour_baf(cell_profiles, cell_reads, data, read_length, snp_densit
     return tumour_a, tumour_b
 
 
-
 def compute_target_reads(
-        coverage: float,
-        data: DataSet,
-        clone_ploidy: dict[str, float],
-        clone_prevalence: dict[str, float],
-        read_length: int,
-        tumour_content: float
-    ) -> tuple[dict[str, float], float]:
+    coverage: float,
+    data: DataSet,
+    clone_ploidy: dict[str, float],
+    clone_prevalence: dict[str, float],
+    read_length: int,
+    tumour_content: float,
+) -> tuple[dict[str, float], float]:
     """
 
     Args:
         coverage (float): coverage of sample
-        data (DataSet): scWGS dataset 
+        data (DataSet): scWGS dataset
         clone_ploidy (dict[int, float]): dictionary of clone labels to clone ploidy
         clone_prevalence (dict[int, float]): dictionary of clone labels to clone prevalences s.t sum(clone_prevalence.values()) = 1.
         read_length (int): read length of sequencer
@@ -219,14 +221,16 @@ def compute_target_reads(
 
     m *= tumour_content
 
-    m += (1-tumour_content) * 2
+    m += (1 - tumour_content) * 2
 
     target_clone_reads = {}
 
     for c in clone_ploidy:
         target_clone_reads[c] = math.ceil(
             # ((clone_ploidy[c] * clone_prevalence[c]) / (2 + m)) * tumour_content * target_reads
-            ((clone_ploidy[c] * clone_prevalence[c]) / m) * tumour_content * target_reads
+            ((clone_ploidy[c] * clone_prevalence[c]) / m)
+            * tumour_content
+            * target_reads
         )
 
     # target_normal_reads = math.ceil((2 / (2 + m)) * (1 - tumour_content) * target_reads)
@@ -270,7 +274,9 @@ def generate_cell_reads(cell_coverage, data, rng):
     return cell_reads
 
 
-def generate_clone_prevalence(clone_ploidy, clone_prevalence_file, clone_prevalence_prior, rng):
+def generate_clone_prevalence(
+    clone_ploidy, clone_prevalence_file, clone_prevalence_prior, rng
+):
     if clone_prevalence_file is None:
         clone_prev = dict(
             zip(
@@ -300,11 +306,18 @@ def load_data(data_file, results_file):
 
     results_df = pd.read_csv(results_file, converters={"cluster_id": str}, sep="\t")
 
-    cell_to_clone = results_df[["cluster_id", "cell_id"]].drop_duplicates().set_index("cell_id")["cluster_id"].to_dict()
+    cell_to_clone = (
+        results_df[["cluster_id", "cell_id"]]
+        .drop_duplicates()
+        .set_index("cell_id")["cluster_id"]
+        .to_dict()
+    )
 
     bin_df = results_df[["chrom", "beg", "end"]].drop_duplicates()
 
-    bin_df["bin_id"] = bin_df.apply(lambda row: "{chrom}:{beg}:{end}".format(**row.to_dict()), axis=1)
+    bin_df["bin_id"] = bin_df.apply(
+        lambda row: "{chrom}:{beg}:{end}".format(**row.to_dict()), axis=1
+    )
 
     results_df = pd.merge(bin_df, results_df, on=["chrom", "beg", "end"])
 
@@ -312,13 +325,19 @@ def load_data(data_file, results_file):
 
     data.filter_cells(results_df["cell_id"].unique())
 
-    cell_cn_a = results_df.pivot(index="cell_id", columns="bin_id", values="cn_A_cell").loc[data.cells, data.bins]
+    cell_cn_a = results_df.pivot(
+        index="cell_id", columns="bin_id", values="cn_A_cell"
+    ).loc[data.cells, data.bins]
 
-    cell_cn_b = results_df.pivot(index="cell_id", columns="bin_id", values="cn_B_cell").loc[data.cells, data.bins]
+    cell_cn_b = results_df.pivot(
+        index="cell_id", columns="bin_id", values="cn_B_cell"
+    ).loc[data.cells, data.bins]
 
     cell_profiles = np.stack([cell_cn_a.values, cell_cn_b.values], axis=-1)
 
-    clone_df = results_df[["cluster_id", "chrom", "beg", "end", "cn_A", "cn_B"]].drop_duplicates()
+    clone_df = results_df[
+        ["cluster_id", "chrom", "beg", "end", "cn_A", "cn_B"]
+    ].drop_duplicates()
 
     clone_df["cn"] = clone_df["cn_A"] + clone_df["cn_B"]
 

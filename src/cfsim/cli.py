@@ -1,8 +1,9 @@
 import click
 
-from cfsim.simulate import run_simulate
 from cfsim.plot import plot_cfdna
+from cfsim.simulate import run_simulate
 from cfsim.wig import run_generate_wig
+
 
 @click.command(name="simulate")
 @click.option(
@@ -67,6 +68,7 @@ from cfsim.wig import run_generate_wig
 def simulate(**kwargs):
     run_simulate(**kwargs)
 
+
 @click.command(name="plot-cfdna")
 @click.option(
     "-i",
@@ -83,6 +85,7 @@ def simulate(**kwargs):
 def plot(**kwargs):
     plot_cfdna(**kwargs)
 
+
 @click.command(name="generate-wig")
 @click.option(
     "-i",
@@ -98,7 +101,6 @@ def plot(**kwargs):
 )
 def generate_wig(**kwargs):
     run_generate_wig(**kwargs)
-
 
 
 @click.group(name="cfsim")

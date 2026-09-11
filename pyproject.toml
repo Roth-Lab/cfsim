@@ -37,13 +37,23 @@ test = { features = ["test"], solve-group = "default" }
 [tool.pixi.feature.test.pypi-dependencies]
 pytest = ">=9.1.1"
 pyyaml = ">=6.0.3"
+ruff = "*"
 
 [tool.pytest.ini_options]
 pythonpath = ["src", "."]
 
 [tool.pixi.feature.test.tasks]
+# tests
 test_plotting = "pytest tests/test_plotting/test_plot.py"
 test_simulate = "pytest tests/test_simulate/test_simulate.py"
 test_wig = "pytest tests/test_wig/test_wig.py"
 test_cli = "pytest tests/test_cli/"
-test_all = { depends_on = ["test_plotting", "test_simulate", "test_wig", "test_cli"] }
+test_all = { depends-on = ["test_plotting", "test_simulate", "test_wig", "test_cli"] }
+
+# linting and formatting
+lint = "ruff check ."
+lint_fix = "ruff check . --fix"
+fmt = "ruff format --check ."
+fmt_fix = "ruff format ."
+fix = { depends-on = ["lint_fix", "fmt_fix"] }
+check = { depends-on = ["lint", "fmt"] }

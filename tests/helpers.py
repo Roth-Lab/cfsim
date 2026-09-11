@@ -1,6 +1,7 @@
-import pytest
 import traceback
 from pathlib import Path
+
+import pytest
 import yaml
 from click.testing import CliRunner
 
@@ -40,11 +41,11 @@ def check_cli_from_config_file(command, config_file: str):
     print(result.output)
 
     if result.exit_code != 0:
-        print("Command failed with exit code: {}".format(result.exit_code))
+        print(f"Command failed with exit code: {result.exit_code}")
         if result.exc_info:
             traceback.print_exception(*result.exc_info)
         if result.exception:
-            print("Exception: {}".format(result.exception))
+            print(f"Exception: {result.exception}")
         pytest.fail("exit code == 1")
 
 
@@ -53,16 +54,16 @@ def check_cli_from_config_dict(command, config_dict: dict):
 
     cli_args = []
     for key, value in config_dict.items():
-        cli_args.append("--{}".format(key))
+        cli_args.append(f"--{key}")
         cli_args.append(str(value))
 
     result = runner.invoke(command, cli_args)
     print(result.output)
 
     if result.exit_code != 0:
-        print("Command failed with exit code: {}".format(result.exit_code))
+        print(f"Command failed with exit code: {result.exit_code}")
         if result.exc_info:
             traceback.print_exception(*result.exc_info)
         if result.exception:
-            print("Exception: {}".format(result.exception))
+            print(f"Exception: {result.exception}")
         pytest.fail("exit code == 1")

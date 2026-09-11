@@ -1,8 +1,5 @@
-import pytest
-
 from cfsim.cli import generate_wig
-
-from tests.helpers import load_config, check_cli_from_config_dict
+from tests.helpers import check_cli_from_config_dict, load_config
 
 
 def test_cli_simulate():
